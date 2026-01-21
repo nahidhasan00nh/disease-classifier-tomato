@@ -7,15 +7,19 @@ from PIL import Image
 import io
 import json
 import gdown
+import os
 
-url = "https://drive.google.com/file/d/1rOIm87Ah7ctL1_qWSln3yKUkDfdgc5-D/view?usp=drive_link"
-output = "best_resnet50_model.h5"
-gdown.download(url, output, quiet=False)
+# Download model from Google Drive if not exists
+MODEL_PATH = "best_resnet50_model.h5"
+if not os.path.exists(MODEL_PATH):
+    print("Downloading model...")
+    url = "https://drive.google.com/uc?id=1rOIm87Ah7ctL1_qWSln3yKUkDfdgc5-D"
+    gdown.download(url, MODEL_PATH, quiet=False)
 
 app = Flask(__name__)
 
-# Load model and classes
-model = load_model("best_resnet50_model.h5")
+# Load model and class names
+model = load_model(MODEL_PATH)
 with open("class_names.json", "r") as f:
     class_names = json.load(f)
 
