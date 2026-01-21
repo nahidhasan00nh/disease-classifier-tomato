@@ -9,12 +9,16 @@ import json
 import gdown
 import os
 
-# Download model from Google Drive if not exists
+import gdown
+import os
+
 MODEL_PATH = "best_resnet50_model.h5"
+MODEL_URL = "https://drive.usercontent.google.com/u/0/uc?id=1rOIm87Ah7ctL1_qWSln3yKUkDfdgc5-D&export=download"
+
 if not os.path.exists(MODEL_PATH):
-    print("Downloading model...")
-    url = "https://drive.google.com/uc?id=1rOIm87Ah7ctL1_qWSln3yKUkDfdgc5-D"
-    gdown.download(url, MODEL_PATH, quiet=False)
+    print("Downloading model from Google Drive...")
+    gdown.download(MODEL_URL, MODEL_PATH, quiet=False)
+
 
 app = Flask(__name__)
 
