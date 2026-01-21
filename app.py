@@ -6,6 +6,11 @@ import numpy as np
 from PIL import Image
 import io
 import json
+import gdown
+
+url = "https://drive.google.com/file/d/1rOIm87Ah7ctL1_qWSln3yKUkDfdgc5-D/view?usp=drive_link"
+output = "best_resnet50_model.h5"
+gdown.download(url, output, quiet=False)
 
 app = Flask(__name__)
 
