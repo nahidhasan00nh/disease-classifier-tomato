@@ -4,5 +4,9 @@ services:
     env: python
     plan: free
     region: singapore
-    buildCommand: pip install -r requirements.txt
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.10.13
+    buildCommand: pip install --upgrade pip && pip install -r requirements.txt
     startCommand: gunicorn app:app
+
