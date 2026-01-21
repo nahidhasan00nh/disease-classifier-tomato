@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>🍅 Tomato Disease Classifier</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>🍅 Tomato Disease Classifier</h1>
+    
+    <form id="upload-form" enctype="multipart/form-data">
+        <input type="file" name="file" accept="image/*" required><br>
+        <button type="submit">Predict</button>
+    </form>
+    
+    <div id="preview-card" style="display:none;">
+        <img id="preview" src="#" alt="">
+        <div id="result"></div>
+    </div>
+    
+    <script>
+        const form = document.getElementById("upload-form");
+        const previewCard = document.getElementById("preview-card");
+        const previewImg = document.getElementById("preview");
+        const resultDiv = document.getElementById("result");
+
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const fileInput = form.querySelector('input[name="file"]');
+            const file = fileInput.files[0];
+            if (!file) return;
+
+            previewImg.src = URL.createObjectURL(file);
+            previewCard.style.display = "block";
+            resultDiv.innerHTML = "<p>Predicting...</p>";
+
+            const formData = new FormData();
+            formData.append("file", file);
+
+            const response = await fetch("/predict", {
+                method: "POST",
+                body: formData
+            });
+            const data = await response.json();
+
+            if (response.ok) {
+                let html = '';
+                data.top_3.forEach((item, index) => {
+                    const barWidth = item.probability; // already in percent
+                    const barClass = index === 0 ? 'top-bar' : 'other-bar';
+                    html += `
+                        <div class="result-item">
+                            <span class="result-text">${item.class}</span>
+                            <div class="bar-container">
+                                <div class="bar ${barClass}" style="width: ${barWidth}%;">
+                                    ${barWidth}%
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                resultDiv.innerHTML = html;
+            } else {
+                resultDiv.innerHTML = `<p style="color:red;">Error: ${data.error}</p>`;
+            }
+        });
+    </script>
+</body>
+</html>
